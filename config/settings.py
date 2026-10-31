@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
-
+from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # DEV ONLY: change the key and set DEBUG = False before deploying.
 SECRET_KEY = "change-me-before-going-live"
-DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
+DEBUG = config("DEBUG", default="True").lower() == "true"
 ALLOWED_HOSTS = [
     ".onrender.com",
     "localhost",
