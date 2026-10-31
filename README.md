@@ -45,7 +45,11 @@ glow_offers/
   media/             uploaded offer images (created automatically)
 ```
 
-## Before going live
+## Deploying on Render
 
-- Set `DEBUG = False`, set a new `SECRET_KEY`, and fill in `ALLOWED_HOSTS` in `config/settings.py`.
-- Serve `/media/` with your web server (nginx, etc.) since Django only serves it in debug mode.
+For a Render Web Service, configure:
+
+- **Build Command:** `pip install -r requirements.txt && python manage.py collectstatic --no-input`
+- **Start Command:** `gunicorn config.wsgi:application`
+
+Set `DEBUG=False` and a unique `SECRET_KEY` in the service's environment variables. Run `python manage.py migrate` against the deployed service's database when applying migrations. WhiteNoise serves the collected files from `staticfiles/`; uploaded files in `/media/` need separate persistent storage if they must survive redeploys.
