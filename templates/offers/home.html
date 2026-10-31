@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}AdVibe | Skincare &amp; beauty offers{% endblock %}
+
+{% block content %}
+<header class="site-header site-header--wide">
+  {% url 'home' as home_url %}
+  {% include "offers/_logo.html" with href=home_url %}
+</header>
+
+<main class="wrap wrap--wide">
+  <section class="hero">
+    <h1>Today&rsquo;s glow-up deals &#10024;</h1>
+    <p>Fresh skincare and beauty offers, picked just for you. Tap a card to grab the deal.</p>
+  </section>
+
+  {% if pinned %}
+  <section class="block">
+    <h2 class="block-title">&#128204; Pinned picks</h2>
+    <div class="grid">
+      {% for offer in pinned %}
+        {% include "offers/_card.html" with offer=offer pinned=True %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if others %}
+  <section class="block">
+    <h2 class="block-title">{% if pinned %}More offers{% else %}All offers{% endif %} &#127872;</h2>
+    <div class="grid">
+      {% for offer in others %}
+        {% include "offers/_card.html" with offer=offer pinned=False %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if not pinned and not others %}
+  <section class="empty">
+    <p class="empty-emoji">&#127800;</p>
+    <h2>No offers right now</h2>
+    <p>New skincare and beauty deals land here often. Check back soon!</p>
+  </section>
+  {% endif %}
+</main>
+
+<footer class="site-footer">Made with love &#128150; AdVibe</footer>
+{% endblock %}

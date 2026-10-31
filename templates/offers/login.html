@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Admin login | AdVibe{% endblock %}
+
+{% block content %}
+<main class="login-wrap">
+  <form method="post" class="panel login-panel">
+    {% csrf_token %}
+    <img class="login-logo" src="{% static 'images/advibe-logo.png' %}" alt="AdVibe">
+    <h1>Admin login &#127872;</h1>
+    <p class="muted">Sign in to add, pin and remove offers.</p>
+
+    {% if form.errors %}
+      <p class="alert alert--error">That username or password didn&rsquo;t work. Try again.</p>
+    {% endif %}
+
+    <label for="id_username">Username</label>
+    <input type="text" name="username" id="id_username" autocomplete="username" required autofocus>
+
+    <label for="id_password">Password</label>
+    <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn--block" type="submit">Log in</button>
+    <p class="center"><a href="{% url 'home' %}">Back to the site</a></p>
+  </form>
+</main>
+{% endblock %}

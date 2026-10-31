@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Admin | AdVibe{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<header class="site-header">
+  {% url 'dashboard' as dash_url %}
+  {% include "offers/_logo.html" with href=dash_url suffix="admin" %}
+  <nav class="header-actions">
+    <a class="btn btn--ghost" href="{% url 'home' %}" target="_blank">View site</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="btn btn--ghost" type="submit">Log out</button>
+    </form>
+  </nav>
+</header>
+
+<main class="wrap">
+  {% if messages %}
+    {% for message in messages %}
+      <p class="alert alert--{{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+
+  <div class="admin-layout">
+    <section class="panel">
+      <h2>Add a new offer</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+          {% if field.name == "is_pinned" %}
+            <label class="check">{{ field }} {{ field.label }}</label>
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        <button class="btn btn--block" type="submit">Publish offer</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Live offers <span class="count">{{ offers|length }}</span></h2>
+
+      {% for offer in offers %}
+      <div class="row">
+        <img src="{{ offer.image.url }}" alt="">
+        <div class="row-text">
+          <strong>{% if offer.is_pinned %}&#128204; {% endif %}{{ offer.title }}</strong>
+          {% if offer.description %}<span>{{ offer.description|truncatechars:90 }}</span>{% endif %}
+          <a href="{{ offer.link }}" target="_blank" rel="noopener noreferrer">{{ offer.link|truncatechars:45 }}</a>
+        </div>
+        <div class="row-actions">
+          <form method="post" action="{% url 'toggle_pin' offer.pk %}">
+            {% csrf_token %}
+            <button class="btn btn--small btn--ghost" type="submit">{% if offer.is_pinned %}Unpin{% else %}Pin to top{% endif %}</button>
+          </form>
+          <form method="post" action="{% url 'delete_offer' offer.pk %}" onsubmit="return confirm('Remove this offer from the site?');">
+            {% csrf_token %}
+            <button class="btn btn--small btn--danger" type="submit">Remove</button>
+          </form>
+        </div>
+      </div>
+      {% empty %}
+        <p class="muted">No offers yet. Add your first one using the form.</p>
+      {% endfor %}
+    </section>
+  </div>
+</main>
+{% endblock %}

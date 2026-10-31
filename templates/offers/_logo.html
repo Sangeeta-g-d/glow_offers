@@ -1,0 +1,5 @@
+{% load static %}
+<a class="logo" href="{{ href }}">
+  <img src="{% static 'images/advibe-logo.png' %}" alt="">
+  <span>AdVibe{% if suffix %} <small>{{ suffix }}</small>{% endif %}</span>
+</a>
